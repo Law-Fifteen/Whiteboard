@@ -53,6 +53,7 @@ export default {
 function ghHeaders(env) {
   return {
     'Accept': 'application/vnd.github.v3+json',
+    'User-Agent': 'Whiteboard-Worker',
     'Authorization': `Bearer ${env.GITHUB_TOKEN}`,
   };
 }
@@ -60,7 +61,7 @@ function ghHeaders(env) {
 async function ghGet(env) {
   const r = await fetch(
     `https://api.github.com/repos/${env.GITHUB_REPO}/contents/data/tasks.json`,
-    { headers: { 'Accept': 'application/vnd.github.v3+json' } }
+    { headers: { 'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'Whiteboard-Worker' } }
   );
 
   if (r.status === 404) return [];
