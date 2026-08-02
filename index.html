@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>To-Do List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D0F13;--card:rgba(255,255,255,.08);--card-hover:rgba(255,255,255,.12);--border:rgba(255,255,255,.12);--accent:#6AA9FF;--accent-dim:rgba(106,169,255,.15);--success:#67D58A;--success-dim:rgba(103,213,138,.15);--danger:#F26B6B;--danger-dim:rgba(242,107,107,.15);--warning:#F5A623;--warning-dim:rgba(245,166,35,.15);--text:#F5F5F5;--text-sec:#B7BDC7;--text-muted:#808891;--radius:16px;--radius-sm:10px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px}
+
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.04;will-change:transform}
+.blob-1{width:500px;height:500px;background:radial-gradient(circle,var(--accent),transparent 70%);top:-150px;left:-150px;animation:fl1 28s ease-in-out infinite}
+.blob-2{width:450px;height:450px;background:radial-gradient(circle,var(--success),transparent 70%);bottom:-150px;right:-150px;animation:fl2 32s ease-in-out infinite}
+.blob-3{width:350px;height:350px;background:radial-gradient(circle,#a78bfa,transparent 70%);top:40%;left:50%;animation:fl3 36s ease-in-out infinite}
+@keyframes fl1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,100px) scale(.95)}}
+@keyframes fl2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-70px,-50px) scale(1.05)}66%{transform:translate(50px,-80px) scale(.9)}}
+@keyframes fl3{0%,100%{transform:translate(-50%,-50%) scale(1)}33%{transform:translate(-30%,-60%) scale(1.15)}66%{transform:translate(-60%,-40%) scale(.85)}}
+
+.app{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 16px 100px;min-height:100dvh;display:flex;flex-direction:column}
+@media(min-width:700px){.app{max-width:1100px;padding:0 32px 100px}}
+
+.header{padding:24px 0 16px;position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,15,19,.8);margin:0 -16px;padding-left:16px;padding-right:16px}
+@media(min-width:700px){.header{margin:0 -32px;padding-left:32px;padding-right:32px}}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.header h1{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.1}
+.header p{font-size:13px;color:var(--text-muted);margin-top:2px}
+.stats{display:flex;gap:12px}
+.stat{display:flex;flex-direction:column;align-items:center;min-width:56px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.stat-num{font-size:20px;font-weight:700;line-height:1}
+.stat-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.user-bar{display:flex;justify-content:space-between;align-items:center}
+.user-btn{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:13px;font-family:inherit;cursor:pointer;transition:all .2s}
+.user-btn:hover{background:var(--card-hover)}
+.user-avatar{width:24px;height:24px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.sync{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);transition:background .3s}
+.sync-dot.ok{background:var(--success)}
+.sync-dot.err{background:var(--danger)}
+.sync-dot.saving{background:var(--warning);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.search-wrap{margin:8px 0 16px}
+.search-box{position:relative}
+.search-box svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--text-muted)}
+.search-box input{width:100%;padding:12px 14px 12px 42px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s}
+.search-box input::placeholder{color:var(--text-muted)}
+.search-box input:focus{border-color:var(--accent)}
+
+.tasks{display:flex;flex-direction:column;gap:8px}
+.task-card{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease-out;position:relative;overflow:hidden}
+.task-card:hover{background:var(--card-hover);border-color:rgba(255,255,255,.18)}
+.task-card:active{transform:scale(.98)}
+.task-card.overdue{border-color:rgba(242,107,107,.4);background:rgba(242,107,107,.06)}
+.task-card.overdue::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--danger);border-radius:0 2px 2px 0}
+.task-card.due-soon{border-color:rgba(245,166,35,.35);background:rgba(245,166,35,.05)}
+.task-card.due-soon::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--warning);border-radius:0 2px 2px 0}
+.task-check{width:22px;height:22px;border:2px solid var(--text-muted);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:transparent;transition:all .2s}
+.task-card.completed .task-check{border-color:var(--success);background:var(--success-dim);color:var(--success)}
+.task-body{flex:1;min-width:0}
+.task-header{font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.task-card.completed .task-header{color:var(--text-muted);text-decoration:line-through}
+.task-meta{display:flex;align-items:center;gap:8px;margin-top:3px;font-size:12px;color:var(--text-muted)}
+.task-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--text-muted);opacity:.5}
+.task-deadline{display:inline-flex;align-items:center;gap:4px;color:var(--text-muted);font-size:12px}
+.task-deadline.overdue-text{color:var(--danger)}
+.task-deadline.due-soon-text{color:var(--warning)}
+.task-chevron{color:var(--text-muted);font-size:18px;flex-shrink:0;opacity:.5}
+
+.empty{text-align:center;padding:60px 20px;display:none}
+.empty svg{width:64px;height:64px;color:var(--text-muted);opacity:.4;margin-bottom:16px}
+.empty h3{font-size:18px;font-weight:600;margin-bottom:4px}
+.empty p{font-size:14px;color:var(--text-muted)}
+
+.completed-section{margin-top:24px}
+.completed-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-sec);font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s}
+.completed-toggle:hover{background:var(--card)}
+.completed-toggle .arrow{transition:transform .25s;font-size:12px}
+.completed-toggle .arrow.open{transform:rotate(180deg)}
+.completed-list{margin-top:8px;display:none;flex-direction:column;gap:6px}
+.completed-list.show{display:flex}
+.completed-list .task-card{opacity:.6}
+.completed-list .task-card:hover{opacity:.85}
+
+.fab{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(106,169,255,.35);transition:all .2s;z-index:100}
+.fab:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(106,169,255,.45)}
+.fab:active{transform:scale(.95)}
+@media(min-width:700px){.fab{bottom:36px;right:36px;width:60px;height:60px;font-size:30px}}
+
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fadeIn .2s}
+.modal-sheet{position:relative;width:100%;max-width:520px;max-height:90dvh;background:rgba(22,25,32,.98);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:20px 20px env(safe-area-inset-bottom,16px);overflow-y:auto;animation:slideUp .25s ease-out;z-index:1}
+@media(min-width:700px){.modal-sheet{border-radius:20px;margin-bottom:40px}}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin:0 auto 16px}
+.modal-sheet h2{font-size:20px;font-weight:600;margin-bottom:16px}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:var(--text-muted);margin-bottom:6px;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;resize:vertical}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent)}
+.form-group textarea{min-height:100px;line-height:1.5}
+.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23808891' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.form-group select option{background:#161920;color:var(--text)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:400px){.form-row{grid-template-columns:1fr}}
+
+.detail-meta{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.meta-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.meta-label{color:var(--text-muted)}
+.meta-value{color:var(--text-sec);font-weight:500}
+.detail-divider{height:1px;background:var(--border);margin:0 0 16px}
+.detail-notes{font-size:14px;line-height:1.7;color:var(--text-sec);white-space:pre-wrap;word-break:break-word;margin-bottom:20px;max-height:40dvh;overflow-y:auto;padding:14px;background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.detail-notes:empty{display:none}
+.detail-notes-empty{font-size:14px;color:var(--text-muted);font-style:italic;margin-bottom:20px;padding:14px;background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center}
+
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;padding-top:8px}
+.btn{padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;border:none}
+.btn-ghost{background:transparent;color:var(--text-sec);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--card)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-success{background:var(--success);color:#0D0F13}
+.btn-success:hover{filter:brightness(1.1)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{filter:brightness(1.1)}
+
+.user-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.user-card-btn{display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 16px;background:var(--card);border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s;font-family:inherit}
+.user-card-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+.user-card-btn .avatar{width:48px;height:48px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700}
+.user-card-btn .name{font-size:15px;font-weight:600;color:var(--text)}
+.user-subtitle{font-size:14px;color:var(--text-muted);margin-bottom:8px}
+
+.footer{margin-top:auto;padding:24px 0 16px;text-align:center;font-size:11px;color:var(--text-muted);display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:300;transition:transform .3s ease-out;pointer-events:none;max-width:calc(100vw - 40px);text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:rgba(103,213,138,.9);color:#0D0F13}
+.toast.error{background:rgba(242,107,107,.9);color:#fff}
+.toast.info{background:rgba(106,169,255,.9);color:#0D0F13}
+
+.fade-in{animation:fadeIn .25s ease-out}
+@keyframes fadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-10px)}}
+.fade-out{animation:fadeOut .2s ease-out forwards}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div class="app">
+  <header class="header">
+    <div class="header-top">
+      <div>
+        <h1>To-Do List</h1>
+        <p>Complete in order of Priority</p>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-num" id="pendingCount">0</span>
+          <span class="stat-label">Pending</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="doneCount">0</span>
+          <span class="stat-label">Done</span>
+        </div>
+      </div>
+    </div>
+    <div class="user-bar">
+      <button class="user-btn" id="userBtn" onclick="openUserModal()">
+        <span class="user-avatar" id="userAvatar">?</span>
+        <span id="userName">Select User</span>
+      </button>
+      <div class="sync">
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncText">Not synced</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search tasks..." oninput="render()">
+    </div>
+  </div>
+
+  <main>
+    <div class="tasks" id="pendingTasks"></div>
+    <div class="empty" id="emptyState">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><path d="M9 14l2 2 4-4"/></svg>
+      <h3>Nothing to do.</h3>
+      <p>Enjoy the peace while it lasts.</p>
+    </div>
+
+    <div class="completed-section">
+      <button class="completed-toggle" id="compToggle" onclick="toggleCompleted()">
+        <span>Completed Tasks</span>
+        <span class="arrow" id="compArrow">&#9660;</span>
+      </button>
+      <div class="completed-list" id="completedList"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>Whiteboard</span>
+    <span>Last sync: <span id="lastSync">Never</span></span>
+    <span>v1.0.0</span>
+  </footer>
+</div>
+
+<button class="fab" onclick="openNewModal()">+</button>
+
+<div class="modal" id="newModal">
+  <div class="modal-bg" onclick="closeModal('newModal')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2>New Task</h2>
+    <div class="form-group">
+      <label>Task</label>
+      <input type="text" id="newHeader" placeholder="What needs to be done?" maxlength="120">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Deadline (optional)</label>
+        <input type="date" id="newDeadline">
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select id="newPriority">
+          <option value="normal">Normal</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="newNotes" placeholder="Details, links, addresses..." rows="4"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('newModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createTask()">Create Task</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="detailModal">
+  <div class="modal-bg" onclick="closeModal('detailModal')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 id="detTitle"></h2>
+    <div class="detail-meta">
+      <div class="meta-row"><span class="meta-label">Created by</span><span class="meta-value" id="detCreator"></span></div>
+      <div class="meta-row"><span class="meta-label">Created</span><span class="meta-value" id="detCreated"></span></div>
+      <div class="meta-row"><span class="meta-label">Last updated</span><span class="meta-value" id="detUpdated"></span></div>
+      <div class="meta-row" id="detDeadlineRow"><span class="meta-label">Deadline</span><span class="meta-value" id="detDeadline"></span></div>
+      <div class="meta-row"><span class="meta-label">Priority</span><span class="meta-value" id="detPriority"></span></div>
+    </div>
+    <div class="detail-divider"></div>
+    <div id="detNotesContainer"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('detailModal')">Close</button>
+      <button class="btn btn-primary" id="editBtn" onclick="openEditFromDetail()">Edit</button>
+      <button class="btn btn-success" id="compBtn" onclick="completeFromDetail()">Mark Complete</button>
+      <button class="btn btn-primary" id="restBtn" onclick="restoreFromDetail()" style="display:none">Restore</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="editModal">
+  <div class="modal-bg" onclick="closeModal('editModal')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2>Edit Task</h2>
+    <div class="form-group">
+      <label>Task</label>
+      <input type="text" id="editHeader" maxlength="120">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Deadline</label>
+        <input type="date" id="editDeadline">
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select id="editPriority">
+          <option value="normal">Normal</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="editNotes" rows="5"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn btn-danger" onclick="deleteFromEdit()" style="margin-right:auto">Delete</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="userModal">
+  <div class="modal-bg"></div>
+  <div class="modal-sheet" style="text-align:center">
+    <div class="modal-handle"></div>
+    <h2>Who's using the app?</h2>
+    <p class="user-subtitle">Select your name to continue</p>
+    <div class="user-modal-grid">
+      <button class="user-card-btn" onclick="selectUser(0)">
+        <div class="avatar">M</div>
+        <span class="name" id="ucName0">Morgan</span>
+      </button>
+      <button class="user-card-btn" onclick="selectUser(1)">
+        <div class="avatar">P</div>
+        <span class="name" id="ucName1">Phoenix</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = {
+  WORKER_URL: 'https://whiteboard-api.morganambrose.work',
+  USERS: ['Morgan', 'Phoenix'],
+  USER_EMAILS: ['MorganAmbrose@Proton.me', 'Phoenxityy@gmail.com'],
+  REFRESH_INTERVAL: 15000,
+  OVERDUE_DAYS: 3
+};
+
+let state = {
+  tasks: [],
+  user: null,
+  selectedId: null,
+  completedOpen: false,
+  lastSync: null,
+  prevTasks: [],
+  saving: false
+};
+
+const $ = id => document.getElementById(id);
+
+function init() {
+  state.user = localStorage.getItem('wb_user');
+  if (state.user === null) {
+    $('userModal').classList.add('open');
+    return;
+  }
+  $('userAvatar').textContent = CONFIG.USERS[state.user][0];
+  $('userName').textContent = CONFIG.USERS[state.user];
+  $('ucName0').textContent = CONFIG.USERS[0];
+  $('ucName1').textContent = CONFIG.USERS[1];
+  loadTasks();
+  setInterval(loadTasks, CONFIG.REFRESH_INTERVAL);
+  requestNotifPermission();
+}
+
+function selectUser(i) {
+  state.user = i;
+  localStorage.setItem('wb_user', i);
+  $('userAvatar').textContent = CONFIG.USERS[i][0];
+  $('userName').textContent = CONFIG.USERS[i];
+  closeModal('userModal');
+  loadTasks();
+  requestNotifPermission();
+}
+
+function openUserModal() {
+  $('userModal').classList.add('open');
+}
+
+async function loadTasks() {
+  if (!CONFIG.WORKER_URL) {
+    const stored = localStorage.getItem('wb_tasks');
+    state.tasks = stored ? JSON.parse(stored) : [];
+    render();
+    return;
+  }
+  try {
+    setSync('saving');
+    const r = await fetch(CONFIG.WORKER_URL);
+    if (!r.ok) throw new Error('Fetch failed');
+    const data = await r.json();
+    state.prevTasks = [...state.tasks];
+    state.tasks = Array.isArray(data) ? data : [];
+    state.lastSync = new Date();
+    setSync('ok');
+    checkNewTasks();
+    render();
+  } catch (e) {
+    console.error(e);
+    const stored = localStorage.getItem('wb_tasks');
+    state.tasks = stored ? JSON.parse(stored) : [];
+    setSync('err');
+    render();
+  }
+}
+
+async function saveTasks(tasks) {
+  state.tasks = tasks;
+  localStorage.setItem('wb_tasks', JSON.stringify(tasks));
+  if (!CONFIG.WORKER_URL) {
+    state.lastSync = new Date();
+    render();
+    return;
+  }
+  try {
+    setSync('saving');
+    const r = await fetch(CONFIG.WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tasks, action: 'save' })
+    });
+    if (!r.ok) throw new Error('Save failed');
+    state.lastSync = new Date();
+    setSync('ok');
+  } catch (e) {
+    console.error(e);
+    setSync('err');
+    toast('Save failed — stored locally', 'error');
+  }
+  render();
+}
+
+function setSync(s) {
+  const dot = $('syncDot');
+  const txt = $('syncText');
+  dot.className = 'sync-dot' + (s === 'ok' ? ' ok' : s === 'err' ? ' err' : s === 'saving' ? ' saving' : '');
+  txt.textContent = s === 'ok' ? 'Synced' : s === 'err' ? 'Offline' : s === 'saving' ? 'Saving...' : 'Not synced';
+}
+
+function checkNewTasks() {
+  if (!state.prevTasks.length) return;
+  const prevIds = new Set(state.prevTasks.map(t => t.id));
+  const myIdx = state.user;
+  state.tasks.forEach(t => {
+    if (!prevIds.has(t.id) && t.createdBy !== CONFIG.USERS[myIdx]) {
+      notify(`New task: ${t.header}`, `Added by ${t.createdBy}`);
+    }
+  });
+}
+
+function requestNotifPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+function notify(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📋</text></svg>' });
+  }
+}
+
+function getDeadlineStatus(task) {
+  if (!task.deadline || task.completed) return null;
+  const now = new Date();
+  const dl = new Date(task.deadline + 'T23:59:59');
+  const diff = (dl - now) / (1000 * 60 * 60 * 24);
+  if (diff < 0) return 'overdue';
+  if (diff <= 1) return 'due-today';
+  if (diff <= 2) return 'due-soon';
+  return null;
+}
+
+function formatDeadline(deadline) {
+  if (!deadline) return '';
+  const dl = new Date(deadline + 'T00:00:00');
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dlDay = new Date(dl.getFullYear(), dl.getMonth(), dl.getDate());
+  const diff = Math.round((dlDay - today) / (1000 * 60 * 60 * 24));
+  if (diff < 0) return `${Math.abs(diff)}d overdue`;
+  if (diff === 0) return 'Due today';
+  if (diff === 1) return 'Due tomorrow';
+  return `Due in ${diff}d`;
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diff = Math.round((today - dDay) / (1000 * 60 * 60 * 24));
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Yesterday';
+  if (diff < 7) return `${diff} days ago`;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined });
+}
+
+function formatDateTime(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function isOverdue(task) {
+  const days = (Date.now() - new Date(task.created)) / (1000 * 60 * 60 * 24);
+  return !task.completed && days > CONFIG.OVERDUE_DAYS;
+}
+
+function render() {
+  const q = $('searchInput').value.toLowerCase().trim();
+  const pending = state.tasks
+    .filter(t => !t.completed)
+    .filter(t => {
+      if (!q) return true;
+      return t.header.toLowerCase().includes(q) || (t.notes || '').toLowerCase().includes(q) || t.createdBy.toLowerCase().includes(q);
+    })
+    .sort((a, b) => {
+      const dp = { high: 0, normal: 1, low: 2 };
+      const pa = dp[a.priority || 'normal'], pb = dp[b.priority || 'normal'];
+      if (pa !== pb) return pa - pb;
+      if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
+      if (a.deadline) return -1;
+      if (b.deadline) return 1;
+      return new Date(b.created) - new Date(a.created);
+    });
+  const completed = state.tasks.filter(t => t.completed).sort((a, b) => new Date(b.completedDate || b.updated) - new Date(a.completedDate || a.updated));
+
+  $('pendingCount').textContent = state.tasks.filter(t => !t.completed).length;
+  $('doneCount').textContent = completed.length;
+
+  const pendEl = $('pendingTasks');
+  const emptyEl = $('emptyState');
+  if (pending.length === 0 && !q) {
+    pendEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+  } else {
+    emptyEl.style.display = 'none';
+    pendEl.innerHTML = pending.map(t => taskCard(t, false)).join('');
+  }
+
+  const compEl = $('completedList');
+  compEl.innerHTML = completed.map(t => taskCard(t, true)).join('');
+  compEl.classList.toggle('show', state.completedOpen);
+
+  if (state.lastSync) {
+    const s = state.lastSync;
+    $('lastSync').textContent = s.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+}
+
+function taskCard(t, done) {
+  const dlStatus = getDeadlineStatus(t);
+  const overdue = isOverdue(t);
+  let cls = 'task-card';
+  if (done) cls += ' completed';
+  else if (dlStatus === 'overdue') cls += ' overdue';
+  else if (dlStatus === 'due-today' || dlStatus === 'due-soon') cls += ' due-soon';
+  else if (overdue) cls += ' overdue';
+
+  let dlHtml = '';
+  if (t.deadline && !done) {
+    const dlCls = dlStatus === 'overdue' ? 'overdue-text' : (dlStatus === 'due-today' || dlStatus === 'due-soon') ? 'due-soon-text' : '';
+    dlHtml = `<span class="task-deadline ${dlCls}">⏰ ${formatDeadline(t.deadline)}</span><span class="dot"></span>`;
+  }
+
+  const priorityBadge = t.priority === 'high' ? '<span style="color:var(--danger);font-size:11px;font-weight:600">HIGH</span><span class="dot"></span>' : '';
+
+  return `<div class="${cls}" onclick="${done ? `openDetail('${t.id}',true)` : `openDetail('${t.id}',false)`}">
+    <div class="task-check">${done ? '✓' : ''}</div>
+    <div class="task-body">
+      <div class="task-header">${esc(t.header)}</div>
+      <div class="task-meta">
+        ${priorityBadge}
+        <span>${esc(t.createdBy)}</span><span class="dot"></span><span>${formatDate(t.created)}</span>
+        ${dlHtml}
+      </div>
+    </div>
+    <div class="task-chevron">›</div>
+  </div>`;
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+
+function openNewModal() {
+  if (state.user === null) { openUserModal(); return; }
+  $('newHeader').value = '';
+  $('newNotes').value = '';
+  $('newDeadline').value = '';
+  $('newPriority').value = 'normal';
+  openModal('newModal');
+  setTimeout(() => $('newHeader').focus(), 300);
+}
+
+async function createTask() {
+  const header = $('newHeader').value.trim();
+  if (!header) { toast('Enter a task', 'error'); return; }
+  const task = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    header,
+    notes: $('newNotes').value.trim(),
+    deadline: $('newDeadline').value || null,
+    priority: $('newPriority').value,
+    createdBy: CONFIG.USERS[state.user],
+    created: new Date().toISOString(),
+    updated: new Date().toISOString(),
+    completed: false,
+    completedDate: null
+  };
+  const tasks = [...state.tasks, task];
+  await saveTasks(tasks);
+  closeModal('newModal');
+  toast('Task created', 'success');
+
+  if (task.deadline) {
+    const dl = new Date(task.deadline + 'T12:00:00');
+    const now = new Date();
+    const diff = (dl - now) / (1000 * 60 * 60 * 24);
+    if (diff <= 1) {
+      sendDeadlineEmail(task);
+    }
+  }
+}
+
+function openDetail(id, completed) {
+  state.selectedId = id;
+  const t = state.tasks.find(x => x.id === id);
+  if (!t) return;
+  $('detTitle').textContent = t.header;
+  $('detCreator').textContent = t.createdBy;
+  $('detCreated').textContent = formatDateTime(t.created);
+  $('detUpdated').textContent = formatDateTime(t.updated);
+  $('detPriority').textContent = t.priority ? t.priority.charAt(0).toUpperCase() + t.priority.slice(1) : 'Normal';
+
+  if (t.deadline) {
+    $('detDeadlineRow').style.display = 'flex';
+    const dlStatus = getDeadlineStatus(t);
+    const dlCls = dlStatus === 'overdue' ? 'color:var(--danger)' : (dlStatus === 'due-today' || dlStatus === 'due-soon') ? 'color:var(--warning)' : '';
+    $('detDeadline').innerHTML = `<span style="${dlCls}">${t.deadline} (${formatDeadline(t.deadline)})</span>`;
+  } else {
+    $('detDeadlineRow').style.display = 'none';
+  }
+
+  const nc = $('detNotesContainer');
+  if (t.notes) {
+    nc.innerHTML = `<div class="detail-notes">${esc(t.notes)}</div>`;
+  } else {
+    nc.innerHTML = `<div class="detail-notes-empty">No notes</div>`;
+  }
+
+  $('compBtn').style.display = completed ? 'none' : '';
+  $('restBtn').style.display = completed ? '' : 'none';
+  $('editBtn').style.display = completed ? 'none' : '';
+  openModal('detailModal');
+}
+
+function openEditFromDetail() {
+  const t = state.tasks.find(x => x.id === state.selectedId);
+  if (!t) return;
+  closeModal('detailModal');
+  $('editHeader').value = t.header;
+  $('editNotes').value = t.notes || '';
+  $('editDeadline').value = t.deadline || '';
+  $('editPriority').value = t.priority || 'normal';
+  openModal('editModal');
+}
+
+async function saveEdit() {
+  const header = $('editHeader').value.trim();
+  if (!header) { toast('Enter a task', 'error'); return; }
+  const tasks = state.tasks.map(t => {
+    if (t.id !== state.selectedId) return t;
+    return {
+      ...t,
+      header,
+      notes: $('editNotes').value.trim(),
+      deadline: $('editDeadline').value || null,
+      priority: $('editPriority').value,
+      updated: new Date().toISOString()
+    };
+  });
+  await saveTasks(tasks);
+  closeModal('editModal');
+  toast('Task updated', 'success');
+}
+
+async function deleteFromEdit() {
+  if (!confirm('Delete this task?')) return;
+  const tasks = state.tasks.filter(t => t.id !== state.selectedId);
+  await saveTasks(tasks);
+  closeModal('editModal');
+  toast('Task deleted', 'success');
+}
+
+async function completeFromDetail() {
+  const tasks = state.tasks.map(t => {
+    if (t.id !== state.selectedId) return t;
+    return { ...t, completed: true, completedDate: new Date().toISOString(), updated: new Date().toISOString() };
+  });
+  await saveTasks(tasks);
+  closeModal('detailModal');
+  toast('Task completed', 'success');
+}
+
+async function restoreFromDetail() {
+  const tasks = state.tasks.map(t => {
+    if (t.id !== state.selectedId) return t;
+    return { ...t, completed: false, completedDate: null, updated: new Date().toISOString() };
+  });
+  await saveTasks(tasks);
+  closeModal('detailModal');
+  toast('Task restored', 'success');
+}
+
+function toggleCompleted() {
+  state.completedOpen = !state.completedOpen;
+  $('compArrow').classList.toggle('open', state.completedOpen);
+  $('completedList').classList.toggle('show', state.completedOpen);
+}
+
+function openModal(id) { $(id).classList.add('open'); }
+function closeModal(id) { $(id).classList.remove('open'); }
+
+function toast(msg, type) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || 'info');
+  requestAnimationFrame(() => t.classList.add('show'));
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function sendDeadlineEmail(task) {
+  if (!CONFIG.WORKER_URL) return;
+  try {
+    await fetch(CONFIG.WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'notify',
+        task: { header: task.header, deadline: task.deadline },
+        emails: CONFIG.USER_EMAILS
+      })
+    });
+  } catch (e) {
+    console.error('Email notification failed:', e);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['newModal', 'detailModal', 'editModal', 'userModal'].forEach(id => {
+      if ($(id).classList.contains('open')) closeModal(id);
+    });
+  }
+});
+
+init();
+</script>
+</body>
+</html>
