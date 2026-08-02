@@ -10,5 +10,17 @@
     "updated": "2026-08-02T02:04:01.484Z",
     "completed": false,
     "completedDate": null
+  },
+  {
+    "id": "msb5r2w367oyo",
+    "header": "Clean all AC Duct Vents",
+    "notes": "Missing Step Ladder.\nMay need more brushes, the last one was dirtied too much cleaning AC Door Vent",
+    "deadline": null,
+    "priority": "normal",
+    "createdBy": "Morgan",
+    "created": "2026-08-02T02:05:04.995Z",
+    "updated": "2026-08-02T02:05:04.995Z",
+    "completed": false,
+    "completedDate": null
   }
 ]
