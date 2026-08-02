@@ -48,14 +48,26 @@
     "completedDate": "2026-08-02T03:02:13.272Z"
   },
   {
-    "id": "msc17ea7zrsbu",
+    "id": "msc16vve8p468",
+    "header": "Pick up cut weeds",
+    "notes": "",
+    "deadline": "2026-08-06",
+    "priority": "high",
+    "createdBy": "Morgan",
+    "created": "2026-08-02T16:45:10.492Z",
+    "updated": "2026-08-02T16:45:10.496Z",
+    "completed": false,
+    "completedDate": null
+  },
+  {
+    "id": "msc17ez31x0he",
     "header": "Dye her hair",
     "notes": "",
     "deadline": "2026-08-08",
     "priority": "low",
     "createdBy": "Morgan",
-    "created": "2026-08-02T16:45:34.351Z",
-    "updated": "2026-08-02T16:45:34.351Z",
+    "created": "2026-08-02T16:45:35.247Z",
+    "updated": "2026-08-02T16:45:35.247Z",
     "completed": false,
     "completedDate": null
   }
