@@ -50,15 +50,18 @@ export default {
   }
 };
 
+function ghHeaders(env) {
+  const h = { 'Accept': 'application/vnd.github.v3+json' };
+  if (env.GITHUB_TOKEN) {
+    h['Authorization'] = `Bearer ${env.GITHUB_TOKEN}`;
+  }
+  return h;
+}
+
 async function ghGet(env) {
   const r = await fetch(
     `https://api.github.com/repos/${env.GITHUB_REPO}/contents/data/tasks.json`,
-    {
-      headers: {
-        'Authorization': `token ${env.GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-      },
-    }
+    { headers: ghHeaders(env) }
   );
 
   if (r.status === 404) return [];
@@ -74,12 +77,7 @@ async function ghPut(env, tasks) {
   let sha = null;
   const getR = await fetch(
     `https://api.github.com/repos/${env.GITHUB_REPO}/contents/data/tasks.json`,
-    {
-      headers: {
-        'Authorization': `token ${env.GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-      },
-    }
+    { headers: ghHeaders(env) }
   );
   if (getR.ok) {
     const d = await getR.json();
@@ -97,9 +95,8 @@ async function ghPut(env, tasks) {
     {
       method: 'PUT',
       headers: {
-        'Authorization': `token ${env.GITHUB_TOKEN}`,
+        ...ghHeaders(env),
         'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json',
       },
       body: JSON.stringify(body),
     }
