@@ -60,6 +60,8 @@ body{font-family:'Inter',Segoe UI,system-ui,sans-serif;background:var(--bg);colo
 .task-card{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease-out;position:relative;overflow:hidden}
 .task-card:hover{background:var(--card-hover);border-color:rgba(255,255,255,.18)}
 .task-card:active{transform:scale(.98)}
+.task-card.priority-high{border-color:rgba(242,107,107,.35);background:rgba(242,107,107,.08)}
+.task-card.priority-high::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--danger);border-radius:0 2px 2px 0}
 .task-card.overdue{border-color:rgba(242,107,107,.4);background:rgba(242,107,107,.06)}
 .task-card.overdue::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--danger);border-radius:0 2px 2px 0}
 .task-card.due-soon{border-color:rgba(245,166,35,.35);background:rgba(245,166,35,.05)}
@@ -567,9 +569,12 @@ function taskCard(t, done) {
   const overdue = isOverdue(t);
   let cls = 'task-card';
   if (done) cls += ' completed';
-  else if (dlStatus === 'overdue') cls += ' overdue';
-  else if (dlStatus === 'due-today' || dlStatus === 'due-soon') cls += ' due-soon';
-  else if (overdue) cls += ' overdue';
+  else if (!done && t.priority === 'high') cls += ' priority-high';
+  if (!done) {
+    if (dlStatus === 'overdue') cls += ' overdue';
+    else if (dlStatus === 'due-today' || dlStatus === 'due-soon') cls += ' due-soon';
+    else if (overdue) cls += ' overdue';
+  }
 
   let dlHtml = '';
   if (t.deadline && !done) {
