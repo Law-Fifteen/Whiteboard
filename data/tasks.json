@@ -46,5 +46,17 @@
     "updated": "2026-08-02T03:02:13.274Z",
     "completed": true,
     "completedDate": "2026-08-02T03:02:13.272Z"
+  },
+  {
+    "id": "msc16vve8p468",
+    "header": "Pick up cut weeds",
+    "notes": "",
+    "deadline": "2026-08-06",
+    "priority": "high",
+    "createdBy": "Morgan",
+    "created": "2026-08-02T16:45:10.492Z",
+    "updated": "2026-08-02T16:45:10.496Z",
+    "completed": false,
+    "completedDate": null
   }
 ]
