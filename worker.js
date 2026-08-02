@@ -41,7 +41,7 @@ export default {
 
       return json({ error: 'Method not allowed' }, 405);
     } catch (e) {
-      return json({ error: e.message }, 500);
+      return json({ error: e.message, repo: typeof env.GITHUB_REPO !== 'undefined' ? 'set' : 'missing', token: typeof env.GITHUB_TOKEN !== 'undefined' ? 'set' : 'missing' }, 500);
     }
   },
 
@@ -51,17 +51,16 @@ export default {
 };
 
 function ghHeaders(env) {
-  const h = { 'Accept': 'application/vnd.github.v3+json' };
-  if (env.GITHUB_TOKEN) {
-    h['Authorization'] = `Bearer ${env.GITHUB_TOKEN}`;
-  }
-  return h;
+  return {
+    'Accept': 'application/vnd.github.v3+json',
+    'Authorization': `Bearer ${env.GITHUB_TOKEN}`,
+  };
 }
 
 async function ghGet(env) {
   const r = await fetch(
     `https://api.github.com/repos/${env.GITHUB_REPO}/contents/data/tasks.json`,
-    { headers: ghHeaders(env) }
+    { headers: { 'Accept': 'application/vnd.github.v3+json' } }
   );
 
   if (r.status === 404) return [];
