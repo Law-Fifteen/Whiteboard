@@ -82,17 +82,5 @@
     "updated": "2026-08-03T03:23:16.249Z",
     "completed": false,
     "completedDate": null
-  },
-  {
-    "id": "msco1wurwj5li",
-    "header": "Living room window leak",
-    "notes": "Left one, Top right",
-    "deadline": null,
-    "priority": "high",
-    "createdBy": "Morgan",
-    "created": "2026-08-03T03:25:09.651Z",
-    "updated": "2026-08-03T03:25:09.651Z",
-    "completed": false,
-    "completedDate": null
   }
 ]
