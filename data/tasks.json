@@ -57,7 +57,10 @@
     "created": "2026-08-02T16:45:10.492Z",
     "updated": "2026-08-02T16:45:10.496Z",
     "completed": false,
-    "completedDate": null
+    "completedDate": null,
+    "_notified": [
+      "msc16vve8p468_1"
+    ]
   },
   {
     "id": "msc17ez31x0he",
@@ -81,7 +84,10 @@
     "created": "2026-08-03T03:23:16.246Z",
     "updated": "2026-08-05T07:25:28.167Z",
     "completed": false,
-    "completedDate": null
+    "completedDate": null,
+    "_notified": [
+      "mscnzhck6psv9_0"
+    ]
   },
   {
     "id": "msco509hzrxf7",
