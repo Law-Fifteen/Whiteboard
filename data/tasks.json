@@ -59,7 +59,8 @@
     "completed": false,
     "completedDate": null,
     "_notified": [
-      "msc16vve8p468_1"
+      "msc16vve8p468_1",
+      "msc16vve8p468_0"
     ]
   },
   {
@@ -111,6 +112,9 @@
     "created": "2026-08-06T02:42:35.675Z",
     "updated": "2026-08-06T02:42:35.675Z",
     "completed": false,
-    "completedDate": null
+    "completedDate": null,
+    "_notified": [
+      "msgwuq6xgwpqt_0"
+    ]
   }
 ]
