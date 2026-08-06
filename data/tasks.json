@@ -100,5 +100,17 @@
     "updated": "2026-08-03T03:27:34.037Z",
     "completed": false,
     "completedDate": null
+  },
+  {
+    "id": "msgwuq6xgwpqt",
+    "header": "Trash day",
+    "notes": "All stainless steel litter boxes empty out",
+    "deadline": "2026-08-06",
+    "priority": "high",
+    "createdBy": "Morgan",
+    "created": "2026-08-06T02:42:35.675Z",
+    "updated": "2026-08-06T02:42:35.675Z",
+    "completed": false,
+    "completedDate": null
   }
 ]
