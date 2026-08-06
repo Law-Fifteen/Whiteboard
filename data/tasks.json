@@ -82,9 +82,9 @@
     "priority": "normal",
     "createdBy": "Morgan",
     "created": "2026-08-03T03:23:16.246Z",
-    "updated": "2026-08-05T07:25:28.167Z",
-    "completed": false,
-    "completedDate": null,
+    "updated": "2026-08-06T01:18:52.931Z",
+    "completed": true,
+    "completedDate": "2026-08-06T01:18:52.928Z",
     "_notified": [
       "mscnzhck6psv9_0"
     ]
