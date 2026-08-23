@@ -137,8 +137,8 @@
     "priority": "normal",
     "createdBy": "Morgan",
     "created": "2026-08-23T08:44:44.405Z",
-    "updated": "2026-08-23T08:44:44.405Z",
-    "completed": false,
-    "completedDate": null
+    "updated": "2026-08-23T08:44:53.649Z",
+    "completed": true,
+    "completedDate": "2026-08-23T08:44:53.648Z"
   }
 ]
