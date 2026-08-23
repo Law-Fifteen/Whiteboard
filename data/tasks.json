@@ -55,9 +55,9 @@
     "priority": "high",
     "createdBy": "Morgan",
     "created": "2026-08-02T16:45:10.492Z",
-    "updated": "2026-08-23T08:44:21.146Z",
-    "completed": true,
-    "completedDate": "2026-08-23T08:44:21.145Z",
+    "updated": "2026-08-02T16:45:10.496Z",
+    "completed": false,
+    "completedDate": null,
     "_notified": [
       "msc16vve8p468_1",
       "msc16vve8p468_0"
@@ -116,5 +116,17 @@
     "_notified": [
       "msgwuq6xgwpqt_0"
     ]
+  },
+  {
+    "id": "mt5k9wz7pjtqq",
+    "header": "Replace oven vent outtakes cap",
+    "notes": "",
+    "deadline": "2026-08-26",
+    "priority": "normal",
+    "createdBy": "Morgan",
+    "created": "2026-08-23T08:44:43.699Z",
+    "updated": "2026-08-23T08:44:43.699Z",
+    "completed": false,
+    "completedDate": null
   }
 ]
