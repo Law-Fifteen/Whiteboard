@@ -230,19 +230,7 @@
     "priority": "high",
     "createdBy": "Morgan",
     "created": "2026-08-26T23:22:17.871Z",
-    "updated": "2026-08-26T23:22:17.871Z",
-    "completed": false,
-    "completedDate": null
-  },
-  {
-    "id": "mtapytt1lnfmr",
-    "header": "Make beef",
-    "notes": "",
-    "deadline": "2026-08-27",
-    "priority": "high",
-    "createdBy": "Morgan",
-    "created": "2026-08-26T23:22:54.949Z",
-    "updated": "2026-08-26T23:22:54.949Z",
+    "updated": "2026-08-26T23:23:06.244Z",
     "completed": false,
     "completedDate": null
   }
