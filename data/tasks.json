@@ -232,6 +232,9 @@
     "created": "2026-08-26T23:22:17.871Z",
     "updated": "2026-08-26T23:23:06.244Z",
     "completed": false,
-    "completedDate": null
+    "completedDate": null,
+    "_notified": [
+      "mtapy173lj7rq_0"
+    ]
   }
 ]
