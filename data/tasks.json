@@ -179,9 +179,9 @@
     "priority": "normal",
     "createdBy": "Morgan",
     "created": "2026-08-24T21:35:21.530Z",
-    "updated": "2026-08-24T21:35:21.530Z",
-    "completed": false,
-    "completedDate": null,
+    "updated": "2026-09-04T22:39:00.361Z",
+    "completed": true,
+    "completedDate": "2026-09-04T22:39:00.361Z",
     "_notified": [
       "mt7r8szedxbcq_0"
     ]
@@ -218,9 +218,9 @@
     "priority": "high",
     "createdBy": "Morgan",
     "created": "2026-08-26T23:21:57.976Z",
-    "updated": "2026-09-04T22:38:55.841Z",
+    "updated": "2026-09-04T22:38:56.738Z",
     "completed": true,
-    "completedDate": "2026-09-04T22:38:55.841Z"
+    "completedDate": "2026-09-04T22:38:56.738Z"
   },
   {
     "id": "mtapy173lj7rq",
