@@ -179,9 +179,9 @@
     "priority": "normal",
     "createdBy": "Morgan",
     "created": "2026-08-24T21:35:21.530Z",
-    "updated": "2026-09-04T22:39:00.361Z",
-    "completed": true,
-    "completedDate": "2026-09-04T22:39:00.361Z",
+    "updated": "2026-08-24T21:35:21.530Z",
+    "completed": false,
+    "completedDate": null,
     "_notified": [
       "mt7r8szedxbcq_0"
     ]
@@ -218,9 +218,9 @@
     "priority": "high",
     "createdBy": "Morgan",
     "created": "2026-08-26T23:21:57.976Z",
-    "updated": "2026-09-04T22:38:56.738Z",
-    "completed": true,
-    "completedDate": "2026-09-04T22:38:56.738Z"
+    "updated": "2026-08-26T23:21:57.976Z",
+    "completed": false,
+    "completedDate": null
   },
   {
     "id": "mtapy173lj7rq",
@@ -230,9 +230,9 @@
     "priority": "high",
     "createdBy": "Morgan",
     "created": "2026-08-26T23:22:17.871Z",
-    "updated": "2026-08-26T23:23:06.244Z",
-    "completed": false,
-    "completedDate": null,
+    "updated": "2026-09-04T22:39:08.967Z",
+    "completed": true,
+    "completedDate": "2026-09-04T22:39:08.967Z",
     "_notified": [
       "mtapy173lj7rq_0"
     ]
